@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import type { Product } from "@/lib/types";
 
 export type PriceFilter = "all" | "lt100" | "100to500" | "gt500";
@@ -26,7 +27,26 @@ interface Props {
 }
 
 export function ProductFilters({ products, value, onChange }: Props) {
-  const categories = Array.from(new Set(products.map((p) => p.category)));
+  const [categories, setCategories] = useState<string[]>([]);
+
+  useEffect(() => {
+    // Fetch categories from API
+    fetch("/api/products/categories")
+      .then((res) => res.json())
+      .then((data: string[] | { slug: string; name: string }[]) => {
+        if (Array.isArray(data)) {
+          const cats = data.map((cat) =>
+            typeof cat === "string" ? cat : cat.slug || cat.name
+          );
+          setCategories(cats);
+        }
+      })
+      .catch(() => {
+        // Fallback to categories from products
+        const cats = Array.from(new Set(products.map((p) => p.category)));
+        setCategories(cats);
+      });
+  }, [products]);
 
   function handleChange<K extends keyof FiltersState>(
     key: K,
@@ -36,119 +56,116 @@ export function ProductFilters({ products, value, onChange }: Props) {
   }
 
   return (
-    <aside className="space-y-6 rounded-2xl bg-slate-900/90 p-4 shadow-md shadow-slate-900/80 ring-1 ring-slate-800">
-      <h2 className="text-sm font-semibold tracking-wide text-slate-200">
-        Filter
-      </h2>
+    <div className="sticky top-[61px] z-40 bg-white px-4 py-4 shadow-sm sm:px-6">
+      <div className="mx-auto max-w-7xl">
+        {/* Header */}
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-sm font-semibold text-gray-900">Filter Produk</h2>
+          <button
+            type="button"
+            onClick={() =>
+              onChange({
+                price: "all",
+                rating: "all",
+                category: "all",
+                location: "all",
+              })
+            }
+            className="text-xs font-medium text-green-600 transition hover:text-green-700"
+          >
+            Reset
+          </button>
+        </div>
 
-      {/* Harga */}
-      <div className="space-y-2">
-        <h3 className="text-xs font-medium uppercase tracking-wide text-slate-400">
-          Harga
-        </h3>
-        <div className="space-y-1 text-xs">
-          {[
-            ["all", "Semua"],
-            ["lt100", "< 100"],
-            ["100to500", "100 - 500"],
-            ["gt500", "> 500"],
-          ].map(([key, label]) => (
-            <label key={key} className="flex cursor-pointer items-center gap-2">
-              <input
-                type="radio"
-                className="h-3 w-3"
-                checked={value.price === key}
-                onChange={() =>
-                  handleChange("price", key as FiltersState["price"])
-                }
-              />
-              <span>{label}</span>
+        {/* Filters - Horizontal on desktop, vertical on mobile */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Rating */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-gray-700">Rating</label>
+            <select
+              className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-500/20"
+              value={value.rating}
+              onChange={(e) =>
+                handleChange(
+                  "rating",
+                  e.target.value === "all"
+                    ? "all"
+                    : (Number(e.target.value) as RatingFilter)
+                )
+              }
+            >
+              <option value="all">Semua Rating</option>
+              <option value={4}>⭐ 4+</option>
+              <option value={3}>⭐ 3+</option>
+              <option value={2}>⭐ 2+</option>
+              <option value={1}>⭐ 1+</option>
+            </select>
+          </div>
+
+          {/* Kategori */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-gray-700">
+              Kategori
             </label>
-          ))}
+            <select
+              className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-500/20"
+              value={value.category}
+              onChange={(e) =>
+                handleChange(
+                  "category",
+                  e.target.value as FiltersState["category"]
+                )
+              }
+            >
+              <option value="all">Semua Kategori</option>
+              {categories.map((cat: string) => (
+                <option key={cat} value={cat}>
+                  {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Lokasi */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-gray-700">Lokasi</label>
+            <select
+              className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-500/20"
+              value={value.location}
+              onChange={(e) =>
+                handleChange(
+                  "location",
+                  e.target.value as FiltersState["location"]
+                )
+              }
+            >
+              <option value="all">Semua Lokasi</option>
+              <option value="Jakarta">Jakarta</option>
+              <option value="Bandung">Bandung</option>
+              <option value="Surabaya">Surabaya</option>
+              <option value="Yogyakarta">Yogyakarta</option>
+              <option value="Medan">Medan</option>
+            </select>
+          </div>
+
+          {/* Harga */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-gray-700">Harga</label>
+            <select
+              className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-500/20"
+              value={value.price}
+              onChange={(e) =>
+                handleChange("price", e.target.value as FiltersState["price"])
+              }
+            >
+              <option value="all">Semua Harga</option>
+              <option value="lt100">{"< $100"}</option>
+              <option value="100to500">$100 - $500</option>
+              <option value="gt500">{"> $500"}</option>
+            </select>
+          </div>
         </div>
       </div>
-
-      {/* Rating */}
-      <div className="space-y-2">
-        <h3 className="text-xs font-medium uppercase tracking-wide text-slate-400">
-          Rating
-        </h3>
-        <select
-          className="w-full rounded-xl border border-slate-700 bg-slate-900 px-2 py-1.5 text-xs outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/40"
-          value={value.rating}
-          onChange={(e) =>
-            handleChange(
-              "rating",
-              e.target.value === "all"
-                ? "all"
-                : (Number(e.target.value) as RatingFilter)
-            )
-          }
-        >
-          <option value="all">Semua</option>
-          <option value={4}>≥ 4</option>
-          <option value={3}>≥ 3</option>
-          <option value={2}>≥ 2</option>
-          <option value={1}>≥ 1</option>
-        </select>
-      </div>
-
-      {/* Kategori */}
-      <div className="space-y-2">
-        <h3 className="text-xs font-medium uppercase tracking-wide text-slate-400">
-          Kategori
-        </h3>
-        <select
-          className="w-full rounded-xl border border-slate-700 bg-slate-900 px-2 py-1.5 text-xs outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/40"
-          value={value.category}
-          onChange={(e) =>
-            handleChange("category", e.target.value as FiltersState["category"])
-          }
-        >
-          <option value="all">Semua</option>
-          {categories.map((cat) => (
-            <option key={cat} value={cat}>
-              {cat}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Lokasi (mock dari helper) */}
-      <div className="space-y-2">
-        <h3 className="text-xs font-medium uppercase tracking-wide text-slate-400">
-          Lokasi
-        </h3>
-        <select
-          className="w-full rounded-xl border border-slate-700 bg-slate-900 px-2 py-1.5 text-xs outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/40"
-          value={value.location}
-          onChange={(e) =>
-            handleChange("location", e.target.value as FiltersState["location"])
-          }
-        >
-          <option value="all">Semua</option>
-          <option value="Jakarta">Jakarta</option>
-          <option value="Bandung">Bandung</option>
-          <option value="Surabaya">Surabaya</option>
-          <option value="Yogyakarta">Yogyakarta</option>
-          <option value="Medan">Medan</option>
-        </select>
-      </div>
-
-      <button
-        type="button"
-        onClick={() =>
-          onChange({
-            price: "all",
-            rating: "all",
-            category: "all",
-            location: "all",
-          })
-        }
-        className="w-full rounded-xl border border-slate-700 px-3 py-1.5 text-xs font-semibold text-slate-200 transition hover:border-indigo-400 hover:text-indigo-300"
-      >
-        Reset filter
-      </button>
-    </aside>
+    </div>
   );
 }

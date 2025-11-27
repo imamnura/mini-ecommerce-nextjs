@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 
 const PUBLIC_PATHS = ["/login", "/register", "/_next", "/favicon.ico"];
 
-export function proxy(req: NextRequest) {
+export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   const isPublicPath = PUBLIC_PATHS.some(
@@ -12,9 +12,9 @@ export function proxy(req: NextRequest) {
 
   const token = req.cookies.get("token")?.value;
 
-  //protect product and chart
+  //protect product and cart
   const isProtectedPath =
-    pathname.startsWith("/products") || pathname.startsWith("/chart");
+    pathname.startsWith("/products") || pathname.startsWith("/cart");
 
   if (isProtectedPath && !token) {
     const url = req.nextUrl.clone();

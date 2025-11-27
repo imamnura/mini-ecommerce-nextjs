@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useUserStore } from "@/store/useUserStore";
-import { useAuthLoader } from "@/hooks/useAuthLoader";
 
 export default function ProtectedLayout({
   children,
@@ -14,8 +13,6 @@ export default function ProtectedLayout({
   const user = useUserStore((s) => s.user);
   const isLoading = useUserStore((s) => s.isLoading);
 
-  useAuthLoader();
-
   useEffect(() => {
     if (!isLoading && !user) {
       router.replace("/login");
@@ -24,8 +21,11 @@ export default function ProtectedLayout({
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center text-slate-400">
-        Memuat...
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-green-600"></div>
+          <p className="mt-4 text-sm text-gray-500">Memuat...</p>
+        </div>
       </div>
     );
   }

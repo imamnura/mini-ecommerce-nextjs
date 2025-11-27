@@ -3,90 +3,108 @@
 import type { Product } from "@/lib/types";
 import { getMockLocation } from "@/lib/helpers";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useCartStore } from "@/store/useCartStore";
+import { Star, MapPin, ShoppingCart, Check } from "lucide-react";
+import Link from "next/link";
+import { TOAST_MESSAGES } from "@/lib/constants";
 
 interface Props {
   product: Product;
 }
 
 export function ProductCard({ product }: Props) {
-  const [adding, setAdding] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  const addToCart = useCartStore((s) => s.addToCart);
+  const isInCart = useCartStore((s) => s.isInCart);
+  const hasHydrated = useCartStore((s) => s._hasHydrated);
 
   const location = getMockLocation(product);
 
-  const setTotalQty = useCartStore((s) => s.setTotalQuantity);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-  async function handleAddToCart() {
-    setAdding(true);
-    try {
-      const res = await fetch("/api/cart/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          productId: product.id,
-          quantity: 1,
-        }),
-      });
-
-      const data = await res.json();
-
-      // Update jumlah produk total
-      setTotalQty(data.totalQuantity);
-
-      toast.success("Ditambahkan ke keranjang");
-    } catch (err) {
-      toast.error("Gagal menambahkan ke keranjang");
-    } finally {
-      setAdding(false);
-    }
+  function handleAddToCart() {
+    addToCart({
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      thumbnail: product.thumbnail,
+    });
+    toast.success(TOAST_MESSAGES.addToCart);
   }
+
+  const productInCart = mounted && hasHydrated ? isInCart(product.id) : false;
 
   return (
     <motion.article
-      className="group flex flex-col overflow-hidden rounded-2xl bg-slate-900/90 ring-1 ring-slate-800 transition hover:-translate-y-1 hover:ring-indigo-500/60"
-      whileHover={{ scale: 1.01 }}
-      layout
+      className="group flex flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200 transition hover:shadow-xl hover:ring-green-500"
+      whileHover={{ y: -4 }}
+      transition={{ duration: 0.2 }}
     >
-      <div className="relative aspect-4/3 overflow-hidden bg-slate-950">
+      <Link
+        href={`/products/${product.id}`}
+        className="relative aspect-square overflow-hidden bg-gray-100"
+      >
         <img
           src={product.thumbnail}
           alt={product.title}
-          className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
+          className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
         />
-        <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-slate-950/80 via-slate-950/0 to-slate-950/20" />
-        <div className="absolute left-2 top-2 rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-100">
+        <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/20 via-transparent to-transparent" />
+        <div className="absolute left-2 top-2 rounded-lg bg-white/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-green-700 backdrop-blur-sm">
           {product.category}
         </div>
-      </div>
+      </Link>
 
-      <div className="flex flex-1 flex-col gap-2 p-3">
-        <h3 className="line-clamp-2 text-sm font-semibold text-slate-50">
-          {product.title}
-        </h3>
+      <div className="flex flex-1 flex-col gap-2 p-4">
+        <Link href={`/products/${product.id}`}>
+          <h3 className="line-clamp-2 text-sm font-semibold text-gray-900 min-h-10 transition hover:text-green-600">
+            {product.title}
+          </h3>
+        </Link>
 
-        <div className="flex items-center justify-between text-xs text-slate-400">
-          <span className="font-mono text-sm text-indigo-300">
+        <div className="flex items-center justify-between text-xs">
+          <span className="text-lg font-bold text-green-600">
             ${product.price.toFixed(2)}
           </span>
           <span className="flex items-center gap-1">
-            <span className="text-yellow-400">★</span>
-            {product.rating.toFixed(1)}
+            <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+            <span className="text-gray-700">{product.rating.toFixed(1)}</span>
           </span>
         </div>
 
-        <div className="mt-1 flex items-center justify-between text-[11px] text-slate-500">
+        <div className="mt-1 flex items-center justify-between text-[11px] text-gray-500">
           <span>{product.brand}</span>
-          <span>{location}</span>
+          <span className="flex items-center gap-1">
+            <MapPin className="h-3 w-3" />
+            {location}
+          </span>
         </div>
 
         <button
           onClick={handleAddToCart}
-          disabled={adding}
-          className="mt-2 inline-flex items-center justify-center rounded-xl bg-indigo-500 px-3 py-1.5 text-xs font-semibold text-white shadow-md shadow-indigo-500/40 transition hover:bg-indigo-400 disabled:cursor-not-allowed disabled:opacity-70"
+          disabled={productInCart}
+          className={`mt-2 inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold text-white shadow-sm transition ${
+            productInCart
+              ? "cursor-not-allowed bg-gray-400"
+              : "bg-green-600 hover:bg-green-700"
+          }`}
         >
-          {adding ? "Menambahkan..." : "Tambah ke Keranjang"}
+          {productInCart ? (
+            <>
+              <Check className="h-3.5 w-3.5" />
+              <span>Di Keranjang</span>
+            </>
+          ) : (
+            <>
+              <ShoppingCart className="h-3.5 w-3.5" />
+              <span>Tambah</span>
+            </>
+          )}
         </button>
       </div>
     </motion.article>

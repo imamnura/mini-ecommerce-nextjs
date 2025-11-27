@@ -1,6 +1,6 @@
 import type { Product } from "./types";
+import { LOCATIONS } from "./constants";
 
 export function getMockLocation(product: Product): string {
-  const locations = ["Jakarta", "Bandung", "Surabaya", "Yogyakarta", "Medan"];
-  return locations[product.id % locations.length];
+  return LOCATIONS[product.id % LOCATIONS.length];
 }
