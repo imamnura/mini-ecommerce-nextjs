@@ -5,6 +5,7 @@ import { getMockLocation } from "@/lib/helpers";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useCartStore } from "@/store/useCartStore";
 
 interface Props {
   product: Product;
@@ -15,10 +16,12 @@ export function ProductCard({ product }: Props) {
 
   const location = getMockLocation(product);
 
+  const setTotalQty = useCartStore((s) => s.setTotalQuantity);
+
   async function handleAddToCart() {
     setAdding(true);
     try {
-      await fetch("/api/cart/add", {
+      const res = await fetch("/api/cart/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -26,8 +29,14 @@ export function ProductCard({ product }: Props) {
           quantity: 1,
         }),
       });
+
+      const data = await res.json();
+
+      // Update jumlah produk total
+      setTotalQty(data.totalQuantity);
+
       toast.success("Ditambahkan ke keranjang");
-    } catch {
+    } catch (err) {
       toast.error("Gagal menambahkan ke keranjang");
     } finally {
       setAdding(false);

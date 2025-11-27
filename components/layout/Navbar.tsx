@@ -1,33 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-
-interface User {
-  id: number;
-  token: string;
-}
+import { useUserStore } from "@/store/useUserStore";
+import { useCartStore } from "@/store/useCartStore";
 
 export default function Navbar() {
-  const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
-
-  async function fetchUser() {
-    const res = await fetch("/api/me");
-    const data = await res.json();
-    setUser(data.user ?? null);
-  }
-
-  useEffect(() => {
-    fetchUser();
-  }, []);
+  const user = useUserStore((s) => s.user);
+  const logoutStore = useUserStore((s) => s.logout);
+  const totalQuantity = useCartStore((s) => s.totalQuantity);
 
   async function handleLogout() {
-    // hapus cookie via route logout
     await fetch("/api/logout", { method: "POST" });
-
+    logoutStore();
     toast.success("Logout berhasil");
     router.push("/login");
   }
@@ -43,10 +30,21 @@ export default function Navbar() {
         </Link>
 
         {user ? (
-          <div className="flex items-center gap-4 text-sm">
+          <div className="flex items-center gap-5 text-sm">
+            <Link
+              href="/cart"
+              className="relative text-slate-300 hover:text-indigo-200"
+            >
+              Keranjang
+              {totalQuantity > 0 && (
+                <span className="absolute -right-3 -top-2 rounded-full bg-indigo-600 px-2 py-0.5 text-[10px] font-bold text-white">
+                  {totalQuantity}
+                </span>
+              )}
+            </Link>
+
             <span className="text-slate-400">
-              Login sebagai:{" "}
-              <span className="text-indigo-300">User #{user.id}</span>
+              Hallo: <span className="text-indigo-300">User #{user.id}</span>
             </span>
 
             <button
