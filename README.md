@@ -4,16 +4,16 @@ Platform e-commerce modern yang dibangun dengan Next.js 15, React 18, dan TypeSc
 
 ## 📋 Fitur Utama
 
-- ✅ **Autentikasi User** - Login/logout dengan session management
-- 🛒 **Keranjang Belanja** - State management dengan Zustand & persistent storage
-- 🔍 **Pencarian & Filter** - Filter berdasarkan kategori, harga, rating, dan lokasi
-- ♾️ **Infinite Scroll** - Load produk secara dinamis saat scroll
-- 📱 **Responsive Design** - UI modern dan mobile-friendly
-- 🎨 **Animasi Smooth** - Transisi halus dengan Framer Motion
-- 🔔 **Toast Notifications** - Feedback interaktif dengan Sonner
-- 🎯 **Type-Safe** - Full TypeScript untuk maintainability
-- 🚀 **SEO Optimized** - Meta tags dan semantic HTML
-- 🔐 **Protected Routes** - Middleware untuk route protection
+- **Autentikasi User** - Login/logout dengan session management
+- **Keranjang Belanja** - State management dengan Zustand & persistent storage
+- **Pencarian & Filter** - Filter berdasarkan kategori, harga, rating, dan lokasi
+- **Infinite Scroll** - Load produk secara dinamis saat scroll
+- **Responsive Design** - UI modern dan mobile-friendly
+- **Animasi Smooth** - Transisi halus dengan Framer Motion
+- **Toast Notifications** - Feedback interaktif dengan Sonner
+- **Type-Safe** - Full TypeScript untuk maintainability
+- **SEO Optimized** - Meta tags dan semantic HTML
+- **Protected Routes** - Middleware untuk route protection
 
 ## 🛠️ Tech Stack
 
@@ -139,78 +139,3 @@ Gunakan kredensial DummyJSON untuk login:
 | michaelw | michaelwpass | User |
 
 Atau lihat [DummyJSON Users](https://dummyjson.com/users) untuk user lainnya.
-
-## 📚 Fitur Detail
-
-### 1. Autentikasi
-
-- Login dengan username & password
-- Session management dengan cookies
-- Automatic redirect ke halaman sebelumnya setelah login
-- Protected routes dengan Next.js middleware
-
-### 2. Katalog Produk
-
-- Infinite scroll pagination
-- Search by product name
-- Filter by:
-  - Category (Beauty, Fragrances, Furniture, dll)
-  - Price range (< $100, $100-$500, > $500)
-  - Rating (1-5 stars)
-  - Location (Jakarta, Bandung, Surabaya, dll)
-- Product detail page dengan rating & description
-
-### 3. Keranjang Belanja
-
-- Add/remove products
-- Update quantity
-- Persistent storage (localStorage)
-- Real-time cart badge di navbar
-- Cart summary dengan total price
-
-### 4. UI/UX
-
-- Light theme dengan green accent (#10b981)
-- Smooth animations & transitions
-- Loading states & skeleton screens
-- Toast notifications untuk user feedback
-- Responsive design (mobile, tablet, desktop)
-
-## 🔧 Scripts Available
-
-```bash
-pnpm dev          # Run development server
-pnpm build        # Build untuk production
-pnpm start        # Run production server
-pnpm lint         # Run ESLint
-```
-
-## 📝 Configuration
-
-Konfigurasi utama aplikasi terletak di `lib/constants.ts`:
-
-```typescript
-export const APP_NAME = "Mini Ecommerce";
-export const API_BASE_URL = "https://dummyjson.com";
-export const PRODUCTS_PER_PAGE = 12;
-export const INFINITE_SCROLL_THRESHOLD = 100;
-export const LOCATIONS = ["Jakarta", "Bandung", "Surabaya", ...];
-```
-
-## 👨‍💻 Author
-
-**Imam Nura**
-
-- GitHub: [@imamnura](https://github.com/imamnura)
-
-## 🙏 Acknowledgments
-
-- [DummyJSON](https://dummyjson.com/) - Free fake REST API
-- [Next.js Team](https://nextjs.org/) - Amazing framework
-- [Vercel](https://vercel.com/) - Deployment platform
-- [Lucide](https://lucide.dev/) - Beautiful icons
-- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS
-
----
-
-⭐ Jangan lupa star repository ini jika bermanfaat!
