@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Toaster } from "sonner";
+import Navbar from "@/components/layout/Navbar";
 
 export const metadata: Metadata = {
   title: "Web Mini Ecommerce",
@@ -14,6 +16,8 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full">
       <body className="min-h-screen bg-slate-950 text-slate-100 antialiased">
+        <Navbar />
+        <Toaster richColors closeButton />
         <div className="mx-auto max-w-6xl px-4 py-6 lg:px-0">{children}</div>
       </body>
     </html>

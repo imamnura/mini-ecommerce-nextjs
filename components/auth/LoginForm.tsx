@@ -1,23 +1,23 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { use, useState } from "react";
 import { motion } from "framer-motion";
 
 export default function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("from") || "/products";
+  const redirectTo = searchParams.get("from") ?? "/products";
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("emilys"); // contoh user dummyjson
+  const [password, setPassword] = useState("emilyspass");
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setIsLoading(true);
     setError(null);
+    setLoading(true);
 
     try {
       const res = await fetch("/api/login", {
@@ -28,14 +28,14 @@ export default function LoginForm() {
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.message || "Login failed");
+        throw new Error(data.message ?? "Gagal login");
       }
 
       router.push(redirectTo);
     } catch (err: any) {
-      setError(err.message ?? "An unexpected error occurred");
+      setError(err.message ?? "Terjadi kesalahan");
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   }
 
@@ -50,17 +50,12 @@ export default function LoginForm() {
         Mini Ecommerce
       </h1>
       <p className="mt-2 text-center text-sm text-slate-400">
-        Login denagn akun DummyJSON
+        Login dengan akun DummyJSON (contoh: emilys / emilyspass)
       </p>
 
       <form className="mt-6 space-y-5" onSubmit={handleSubmit}>
         <div className="space-y-2">
-          <label
-            htmlFor="username"
-            className="text-sm font-medium text-slate-200"
-          >
-            Username
-          </label>
+          <label className="text-sm font-medium text-slate-200">Username</label>
           <input
             className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm outline-none ring-0 transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/40"
             value={username}
@@ -88,11 +83,11 @@ export default function LoginForm() {
 
         <motion.button
           type="submit"
-          disabled={isLoading}
+          disabled={loading}
           className="flex w-full items-center justify-center rounded-xl bg-indigo-500 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-indigo-500/40 transition hover:bg-indigo-400 disabled:cursor-not-allowed disabled:opacity-70"
           whileTap={{ scale: 0.97 }}
         >
-          {isLoading ? "Logging in..." : "Login"}
+          {loading ? "Logging in..." : "Login"}
         </motion.button>
       </form>
     </motion.div>
