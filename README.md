@@ -1,36 +1,216 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mini Ecommerce - Next.js
 
-## Getting Started
+Platform e-commerce modern yang dibangun dengan Next.js 15, React 18, dan TypeScript. Aplikasi ini menggunakan DummyJSON API sebagai backend dan menampilkan fitur-fitur e-commerce modern seperti keranjang belanja, filter produk, infinite scroll, dan autentikasi.
 
-First, run the development server:
+## 📋 Fitur Utama
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- ✅ **Autentikasi User** - Login/logout dengan session management
+- 🛒 **Keranjang Belanja** - State management dengan Zustand & persistent storage
+- 🔍 **Pencarian & Filter** - Filter berdasarkan kategori, harga, rating, dan lokasi
+- ♾️ **Infinite Scroll** - Load produk secara dinamis saat scroll
+- 📱 **Responsive Design** - UI modern dan mobile-friendly
+- 🎨 **Animasi Smooth** - Transisi halus dengan Framer Motion
+- 🔔 **Toast Notifications** - Feedback interaktif dengan Sonner
+- 🎯 **Type-Safe** - Full TypeScript untuk maintainability
+- 🚀 **SEO Optimized** - Meta tags dan semantic HTML
+- 🔐 **Protected Routes** - Middleware untuk route protection
+
+## 🛠️ Tech Stack
+
+### Core
+
+- **Framework**: [Next.js 15.5.6](https://nextjs.org/) (App Router)
+- **Language**: [TypeScript 5.x](https://www.typescriptlang.org/)
+- **UI Library**: [React 18.3.1](https://react.dev/)
+
+### Styling & UI
+
+- **CSS Framework**: [Tailwind CSS 4.x](https://tailwindcss.com/)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **Animations**: [Framer Motion](https://www.framer.com/motion/)
+- **Notifications**: [Sonner](https://sonner.emilkowal.ski/)
+
+### State Management
+
+- **Global State**: [Zustand 5.x](https://zustand-demo.pmnd.rs/) dengan persist middleware
+
+### API
+
+- **Backend**: [DummyJSON API](https://dummyjson.com/)
+
+## 📦 Struktur Project
+
+```
+mini-ecommerce-nextjs/
+├── app/                          # Next.js App Router
+│   ├── (protected)/             # Protected routes (require auth)
+│   │   ├── cart/               # Halaman keranjang
+│   │   └── products/           # Halaman daftar & detail produk
+│   ├── login/                  # Halaman login
+│   ├── layout.tsx              # Root layout
+│   └── page.tsx                # Homepage
+├── api/                         # API Routes (proxy ke DummyJSON)
+│   ├── cart/                   # Cart endpoints
+│   ├── login/                  # Login endpoint
+│   ├── logout/                 # Logout endpoint
+│   ├── me/                     # User profile endpoint
+│   └── products/               # Products endpoints
+├── components/                  # React Components
+│   ├── auth/                   # Komponen autentikasi
+│   ├── cart/                   # Komponen keranjang
+│   ├── layout/                 # Komponen layout (Navbar, etc)
+│   └── products/               # Komponen produk
+├── hooks/                       # Custom React Hooks
+├── lib/                         # Utilities & helpers
+│   ├── constants.ts            # Konfigurasi & konstanta
+│   ├── helpers.ts              # Helper functions
+│   └── types.ts                # TypeScript types
+├── store/                       # Zustand stores
+│   ├── useCartStore.ts         # Cart state management
+│   └── useUserStore.ts         # User state management
+└── public/                      # Static assets
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Getting Started
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Prerequisites
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Node.js 18.x atau lebih tinggi
+- pnpm (atau npm/yarn)
 
-## Learn More
+### Installation
 
-To learn more about Next.js, take a look at the following resources:
+1. **Clone repository**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   ```bash
+   git clone https://github.com/imamnura/mini-ecommerce-nextjs.git
+   cd mini-ecommerce-nextjs
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+2. **Install dependencies**
 
-## Deploy on Vercel
+   ```bash
+   pnpm install
+   # atau
+   npm install
+   # atau
+   yarn install
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3. **Setup environment variables**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+   Buat file `.env.local` di root project:
+
+   ```env
+   NEXT_PUBLIC_API_URL=https://dummyjson.com
+   ```
+
+4. **Run development server**
+
+   ```bash
+   pnpm dev
+   # atau
+   npm run dev
+   # atau
+   yarn dev
+   ```
+
+5. **Buka browser**
+
+   Akses aplikasi di [http://localhost:3000](http://localhost:3000)
+
+### Build untuk Production
+
+```bash
+# Build aplikasi
+pnpm build
+
+# Run production server
+pnpm start
+```
+
+## 👤 Login Credentials
+
+Gunakan kredensial DummyJSON untuk login:
+
+| Username | Password     | Role |
+| -------- | ------------ | ---- |
+| emilys   | emilyspass   | User |
+| michaelw | michaelwpass | User |
+
+Atau lihat [DummyJSON Users](https://dummyjson.com/users) untuk user lainnya.
+
+## 📚 Fitur Detail
+
+### 1. Autentikasi
+
+- Login dengan username & password
+- Session management dengan cookies
+- Automatic redirect ke halaman sebelumnya setelah login
+- Protected routes dengan Next.js middleware
+
+### 2. Katalog Produk
+
+- Infinite scroll pagination
+- Search by product name
+- Filter by:
+  - Category (Beauty, Fragrances, Furniture, dll)
+  - Price range (< $100, $100-$500, > $500)
+  - Rating (1-5 stars)
+  - Location (Jakarta, Bandung, Surabaya, dll)
+- Product detail page dengan rating & description
+
+### 3. Keranjang Belanja
+
+- Add/remove products
+- Update quantity
+- Persistent storage (localStorage)
+- Real-time cart badge di navbar
+- Cart summary dengan total price
+
+### 4. UI/UX
+
+- Light theme dengan green accent (#10b981)
+- Smooth animations & transitions
+- Loading states & skeleton screens
+- Toast notifications untuk user feedback
+- Responsive design (mobile, tablet, desktop)
+
+## 🔧 Scripts Available
+
+```bash
+pnpm dev          # Run development server
+pnpm build        # Build untuk production
+pnpm start        # Run production server
+pnpm lint         # Run ESLint
+```
+
+## 📝 Configuration
+
+Konfigurasi utama aplikasi terletak di `lib/constants.ts`:
+
+```typescript
+export const APP_NAME = "Mini Ecommerce";
+export const API_BASE_URL = "https://dummyjson.com";
+export const PRODUCTS_PER_PAGE = 12;
+export const INFINITE_SCROLL_THRESHOLD = 100;
+export const LOCATIONS = ["Jakarta", "Bandung", "Surabaya", ...];
+```
+
+## 👨‍💻 Author
+
+**Imam Nura**
+
+- GitHub: [@imamnura](https://github.com/imamnura)
+
+## 🙏 Acknowledgments
+
+- [DummyJSON](https://dummyjson.com/) - Free fake REST API
+- [Next.js Team](https://nextjs.org/) - Amazing framework
+- [Vercel](https://vercel.com/) - Deployment platform
+- [Lucide](https://lucide.dev/) - Beautiful icons
+- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS
+
+---
+
+⭐ Jangan lupa star repository ini jika bermanfaat!
