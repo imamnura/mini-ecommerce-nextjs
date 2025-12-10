@@ -33,6 +33,7 @@ function ProductSkeleton() {
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [skip, setSkip] = useState(0);
+  const skipRef = useRef(0); // Track skip with ref to avoid observer recreation
   const [total, setTotal] = useState(0);
   const [loadingMore, setLoadingMore] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
@@ -75,6 +76,7 @@ export default function ProductsPage() {
         setProducts(data.products);
         setTotal(data.total);
         setSkip(PAGE_SIZE);
+        skipRef.current = PAGE_SIZE; // Sync ref with state
       } catch (err: any) {
         setError(err.message || "Terjadi kesalahan");
         setProducts([]);
@@ -102,12 +104,13 @@ export default function ProductsPage() {
           setLoadingMore(true);
           try {
             const res = await fetch(
-              `/api/products?limit=${PAGE_SIZE}&skip=${skip}`
+              `/api/products?limit=${PAGE_SIZE}&skip=${skipRef.current}`
             );
             if (!res.ok) throw new Error("Failed to load products");
             const data: ProductsResponse = await res.json();
             setProducts((prev) => [...prev, ...data.products]);
-            setSkip((prev) => prev + PAGE_SIZE);
+            skipRef.current += PAGE_SIZE; // Update ref immediately
+            setSkip(skipRef.current); // Sync state for UI
           } catch (err) {
             // Silent fail for infinite scroll - user can retry by scrolling
           } finally {
@@ -124,7 +127,7 @@ export default function ProductsPage() {
 
     observer.observe(sentinel);
     return () => observer.disconnect();
-  }, [skip, loadingMore, initialLoading, products.length, total, isSearching]);
+  }, [loadingMore, initialLoading, products.length, total, isSearching]); // Removed skip from deps
 
   // Aplikasikan filter di client
   const filteredProducts = useMemo(() => {
