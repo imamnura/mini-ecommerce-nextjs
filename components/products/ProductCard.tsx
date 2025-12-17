@@ -3,11 +3,11 @@
 import type { Product } from "@/lib/types";
 import { getMockLocation } from "@/lib/helpers";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useCartStore } from "@/store/useCartStore";
 import { Star, MapPin, ShoppingCart, Check } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { TOAST_MESSAGES } from "@/lib/constants";
 
 interface Props {
@@ -15,17 +15,11 @@ interface Props {
 }
 
 export function ProductCard({ product }: Props) {
-  const [mounted, setMounted] = useState(false);
-
   const addToCart = useCartStore((s) => s.addToCart);
   const isInCart = useCartStore((s) => s.isInCart);
   const hasHydrated = useCartStore((s) => s._hasHydrated);
 
   const location = getMockLocation(product);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   function handleAddToCart() {
     addToCart({
@@ -37,7 +31,7 @@ export function ProductCard({ product }: Props) {
     toast.success(TOAST_MESSAGES.addToCart);
   }
 
-  const productInCart = mounted && hasHydrated ? isInCart(product.id) : false;
+  const productInCart = hasHydrated ? isInCart(product.id) : false;
 
   return (
     <motion.article
@@ -49,13 +43,14 @@ export function ProductCard({ product }: Props) {
         href={`/products/${product.id}`}
         className="relative aspect-square overflow-hidden bg-gray-100"
       >
-        <img
+        <Image
           src={product.thumbnail}
           alt={product.title}
-          className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+          fill
+          className="object-cover transition duration-300 group-hover:scale-105"
         />
         <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/20 via-transparent to-transparent" />
-        <div className="absolute left-2 top-2 rounded-lg bg-white/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-green-700 backdrop-blur-sm">
+        <div className="absolute left-2 top-2 rounded-lg bg-white/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-green-700 backdrop-blur-sm z-10">
           {product.category}
         </div>
       </Link>
@@ -88,11 +83,10 @@ export function ProductCard({ product }: Props) {
         <button
           onClick={handleAddToCart}
           disabled={productInCart}
-          className={`mt-2 inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold text-white shadow-sm transition ${
-            productInCart
-              ? "cursor-not-allowed bg-gray-400"
-              : "bg-green-600 hover:bg-green-700"
-          }`}
+          className={`mt-2 inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold text-white shadow-sm transition ${productInCart
+            ? "cursor-not-allowed bg-gray-400"
+            : "bg-green-600 hover:bg-green-700"
+            }`}
         >
           {productInCart ? (
             <>

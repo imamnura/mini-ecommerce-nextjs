@@ -32,7 +32,8 @@ function ProductSkeleton() {
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
-  const [skip, setSkip] = useState(0);
+  // const [skip, setSkip] = useState(0); // Removed unused state
+
   const skipRef = useRef(0); // Track skip with ref to avoid observer recreation
   const [total, setTotal] = useState(0);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -75,10 +76,14 @@ export default function ProductsPage() {
         const data: ProductsResponse = await res.json();
         setProducts(data.products);
         setTotal(data.total);
-        setSkip(PAGE_SIZE);
+        // setSkip(PAGE_SIZE); // Removed unused state update
         skipRef.current = PAGE_SIZE; // Sync ref with state
-      } catch (err: any) {
-        setError(err.message || "Terjadi kesalahan");
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message || "Terjadi kesalahan");
+        } else {
+          setError("Terjadi kesalahan");
+        }
         setProducts([]);
       } finally {
         setInitialLoading(false);
@@ -110,8 +115,8 @@ export default function ProductsPage() {
             const data: ProductsResponse = await res.json();
             setProducts((prev) => [...prev, ...data.products]);
             skipRef.current += PAGE_SIZE; // Update ref immediately
-            setSkip(skipRef.current); // Sync state for UI
-          } catch (err) {
+            // setSkip(skipRef.current); // Removed unused state
+          } catch {
             // Silent fail for infinite scroll - user can retry by scrolling
           } finally {
             setLoadingMore(false);

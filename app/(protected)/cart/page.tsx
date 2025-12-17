@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import { useCartStore } from "@/store/useCartStore";
-import { useEffect, useState } from "react";
 import {
   ShoppingCart,
   Plus,
@@ -12,6 +11,7 @@ import {
   Rocket,
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function CartPage() {
   const products = useCartStore((s) => s.products);
@@ -21,13 +21,7 @@ export default function CartPage() {
   const removeFromCart = useCartStore((s) => s.removeFromCart);
   const hasHydrated = useCartStore((s) => s._hasHydrated);
 
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted || !hasHydrated) {
+  if (!hasHydrated) {
     return (
       <main className="space-y-6">
         <div className="flex min-h-[50vh] items-center justify-center">
@@ -95,11 +89,14 @@ export default function CartPage() {
                   exit={{ opacity: 0, x: -100 }}
                   className="flex items-center gap-4 rounded-lg border border-gray-200 bg-gray-50 p-4 transition hover:border-green-300 hover:shadow-md"
                 >
-                  <img
-                    src={p.thumbnail}
-                    alt={p.title}
-                    className="h-20 w-20 rounded-lg object-cover"
-                  />
+                  <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg">
+                    <Image
+                      src={p.thumbnail}
+                      alt={p.title}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
                   <div className="flex-1">
                     <div className="font-medium text-gray-900">{p.title}</div>
                     <div className="mt-1 text-sm text-gray-600">

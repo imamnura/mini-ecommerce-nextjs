@@ -73,8 +73,8 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
         success: true,
         url: data.url,
       };
-    } catch (error: any) {
-      const errorMessage = error.message || "Upload failed";
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Upload failed";
 
       if (onError) {
         onError(errorMessage);

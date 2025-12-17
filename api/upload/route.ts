@@ -32,10 +32,10 @@ export async function POST(request: NextRequest) {
       success: true,
       url: result.url,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Upload API error:", error);
     return NextResponse.json(
-      { error: error.message || "Upload failed" },
+      { error: error instanceof Error ? error.message : "Upload failed" },
       { status: 500 }
     );
   }

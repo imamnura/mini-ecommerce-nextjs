@@ -53,9 +53,8 @@ function validateFile(
   if (options.allowedTypes && !options.allowedTypes.includes(file.type)) {
     return {
       valid: false,
-      error: `File type ${
-        file.type
-      } is not allowed. Allowed types: ${options.allowedTypes.join(", ")}`,
+      error: `File type ${file.type
+        } is not allowed. Allowed types: ${options.allowedTypes.join(", ")}`,
     };
   }
 
@@ -116,12 +115,12 @@ export async function uploadFile(
       url: publicUrl,
       path: filePath,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("❌ Upload error:", error);
 
     return {
       success: false,
-      error: error.message || "Failed to upload file",
+      error: error instanceof Error ? error.message : "Failed to upload file",
     };
   }
 }

@@ -6,6 +6,7 @@ import { useCartStore } from "@/store/useCartStore";
 import { toast } from "sonner";
 import { ArrowLeft, ShoppingCart, Star, Check, Package } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { TOAST_MESSAGES } from "@/lib/constants";
 
 type DetailProductPageProps = { params: Promise<{ slug: string }> };
@@ -28,15 +29,10 @@ export default function DetailProductPage({ params }: DetailProductPageProps) {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
-  const [mounted, setMounted] = useState(false);
 
   const addToCart = useCartStore((s) => s.addToCart);
   const isInCart = useCartStore((s) => s.isInCart);
   const hasHydrated = useCartStore((s) => s._hasHydrated);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     (async () => {
@@ -83,7 +79,7 @@ export default function DetailProductPage({ params }: DetailProductPageProps) {
   const discountedPrice =
     product.price * (1 - product.discountPercentage / 100);
 
-  const productInCart = mounted && hasHydrated ? isInCart(product.id) : false;
+  const productInCart = hasHydrated ? isInCart(product.id) : false;
 
   return (
     <motion.div
@@ -106,12 +102,13 @@ export default function DetailProductPage({ params }: DetailProductPageProps) {
             key={selectedImage}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="aspect-square overflow-hidden rounded-xl bg-white shadow-lg"
+            className="relative aspect-square overflow-hidden rounded-xl bg-white shadow-lg"
           >
-            <img
+            <Image
               src={product.images[selectedImage]}
               alt={product.title}
-              className="h-full w-full object-cover"
+              fill
+              className="object-cover"
             />
           </motion.div>
           <div className="grid grid-cols-4 gap-3">
@@ -119,16 +116,16 @@ export default function DetailProductPage({ params }: DetailProductPageProps) {
               <button
                 key={idx}
                 onClick={() => setSelectedImage(idx)}
-                className={`aspect-square overflow-hidden rounded-lg transition ${
-                  selectedImage === idx
-                    ? "ring-2 ring-green-600"
-                    : "ring-1 ring-gray-200 hover:ring-green-400"
-                }`}
+                className={`relative aspect-square overflow-hidden rounded-lg transition ${selectedImage === idx
+                  ? "ring-2 ring-green-600"
+                  : "ring-1 ring-gray-200 hover:ring-green-400"
+                  }`}
               >
-                <img
+                <Image
                   src={img}
                   alt={`${product.title} ${idx + 1}`}
-                  className="h-full w-full object-cover"
+                  fill
+                  className="object-cover"
                 />
               </button>
             ))}
@@ -170,11 +167,10 @@ export default function DetailProductPage({ params }: DetailProductPageProps) {
               {Array.from({ length: 5 }).map((_, i) => (
                 <Star
                   key={i}
-                  className={`h-4 w-4 ${
-                    i < Math.floor(product.rating)
-                      ? "fill-amber-400 text-amber-400"
-                      : "text-gray-300"
-                  }`}
+                  className={`h-4 w-4 ${i < Math.floor(product.rating)
+                    ? "fill-amber-400 text-amber-400"
+                    : "text-gray-300"
+                    }`}
                 />
               ))}
               <span className="ml-1 text-sm font-medium text-gray-700">
@@ -183,9 +179,8 @@ export default function DetailProductPage({ params }: DetailProductPageProps) {
             </div>
             <span className="text-sm text-gray-400">•</span>
             <span
-              className={`flex items-center gap-1 text-sm font-medium ${
-                product.stock > 10 ? "text-green-600" : "text-orange-600"
-              }`}
+              className={`flex items-center gap-1 text-sm font-medium ${product.stock > 10 ? "text-green-600" : "text-orange-600"
+                }`}
             >
               <Package className="h-4 w-4" />
               <span>
@@ -209,11 +204,10 @@ export default function DetailProductPage({ params }: DetailProductPageProps) {
             onClick={handleAddToCart}
             disabled={productInCart}
             whileTap={{ scale: 0.97 }}
-            className={`flex w-full items-center justify-center gap-2 rounded-lg px-6 py-4 text-lg font-semibold text-white shadow-lg transition ${
-              productInCart
-                ? "cursor-not-allowed bg-gray-400 shadow-gray-400/30"
-                : "bg-green-600 shadow-green-600/30 hover:bg-green-500 hover:shadow-xl"
-            }`}
+            className={`flex w-full items-center justify-center gap-2 rounded-lg px-6 py-4 text-lg font-semibold text-white shadow-lg transition ${productInCart
+              ? "cursor-not-allowed bg-gray-400 shadow-gray-400/30"
+              : "bg-green-600 shadow-green-600/30 hover:bg-green-500 hover:shadow-xl"
+              }`}
           >
             {productInCart ? (
               <>

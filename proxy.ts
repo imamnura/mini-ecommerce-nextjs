@@ -1,14 +1,11 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const PUBLIC_PATHS = ["/login", "/register", "/_next", "/favicon.ico"];
+
 
 export function proxy(req: NextRequest) {
     const { pathname } = req.nextUrl;
 
-    const isPublicPath = PUBLIC_PATHS.some(
-        (path) => pathname === path || pathname.startsWith(path)
-    );
 
     const token = req.cookies.get("token")?.value;
 

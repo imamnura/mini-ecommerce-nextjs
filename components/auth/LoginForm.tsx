@@ -39,8 +39,12 @@ export default function LoginForm() {
       setUser(data.user); // Update user store immediately
       router.push(redirectTo);
       router.refresh(); // Force refresh to update navbar
-    } catch (err: any) {
-      setError(err.message ?? "Terjadi kesalahan");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message ?? "Terjadi kesalahan");
+      } else {
+        setError("Terjadi kesalahan");
+      }
     } finally {
       setLoading(false);
     }
