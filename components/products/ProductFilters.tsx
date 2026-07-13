@@ -36,7 +36,7 @@ export function ProductFilters({ products, value, onChange }: Props) {
       .then((data: string[] | { slug: string; name: string }[]) => {
         if (Array.isArray(data)) {
           const cats = data.map((cat) =>
-            typeof cat === "string" ? cat : cat.slug || cat.name
+            typeof cat === "string" ? cat : cat.slug || cat.name,
           );
           setCategories(cats);
         }
@@ -50,7 +50,7 @@ export function ProductFilters({ products, value, onChange }: Props) {
 
   function handleChange<K extends keyof FiltersState>(
     key: K,
-    val: FiltersState[K]
+    val: FiltersState[K],
   ) {
     onChange({ ...value, [key]: val });
   }
@@ -90,7 +90,7 @@ export function ProductFilters({ products, value, onChange }: Props) {
                   "rating",
                   e.target.value === "all"
                     ? "all"
-                    : (Number(e.target.value) as RatingFilter)
+                    : (Number(e.target.value) as RatingFilter),
                 )
               }
             >
@@ -113,7 +113,7 @@ export function ProductFilters({ products, value, onChange }: Props) {
               onChange={(e) =>
                 handleChange(
                   "category",
-                  e.target.value as FiltersState["category"]
+                  e.target.value as FiltersState["category"],
                 )
               }
             >
@@ -135,7 +135,7 @@ export function ProductFilters({ products, value, onChange }: Props) {
               onChange={(e) =>
                 handleChange(
                   "location",
-                  e.target.value as FiltersState["location"]
+                  e.target.value as FiltersState["location"],
                 )
               }
             >

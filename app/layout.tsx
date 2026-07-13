@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "sonner";
-import Navbar from "@/components/layout/Navbar";
 import { AuthProvider } from "@/components/layout/AuthProvider";
-import { APP_NAME, APP_DESCRIPTION } from "@/lib/constants";
+import Navbar from "@/components/layout/Navbar";
+import { APP_DESCRIPTION, APP_NAME } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: {

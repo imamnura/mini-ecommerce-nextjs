@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { API_BASE_URL } from "@/lib/constants";
 import type { ProductsResponse } from "@/lib/types";
 
 export async function GET(req: Request) {
@@ -9,11 +10,11 @@ export async function GET(req: Request) {
 
   let url = "";
   if (q) {
-    url = `https://dummyjson.com/products/search?q=${encodeURIComponent(
-      q
+    url = `${API_BASE_URL}/products/search?q=${encodeURIComponent(
+      q,
     )}&limit=${limit}&skip=${skip}`;
   } else {
-    url = `https://dummyjson.com/products?limit=${limit}&skip=${skip}`;
+    url = `${API_BASE_URL}/products?limit=${limit}&skip=${skip}`;
   }
 
   const res = await fetch(url);

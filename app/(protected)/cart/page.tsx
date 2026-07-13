@@ -1,17 +1,17 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useCartStore } from "@/store/useCartStore";
 import {
-  ShoppingCart,
-  Plus,
-  Minus,
-  Trash2,
   ArrowLeft,
+  Minus,
+  Plus,
   Rocket,
+  ShoppingCart,
+  Trash2,
 } from "lucide-react";
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
+import { useCartStore } from "@/store/useCartStore";
 
 export default function CartPage() {
   const products = useCartStore((s) => s.products);

@@ -1,11 +1,14 @@
 # Mini Ecommerce - Next.js
 
-Platform e-commerce modern yang dibangun dengan Next.js 15, React 18, dan TypeScript. Aplikasi ini menggunakan DummyJSON API sebagai backend dan menampilkan fitur-fitur e-commerce modern seperti keranjang belanja, filter produk, infinite scroll, dan autentikasi.
+Platform e-commerce modern yang dibangun dengan Next.js 16, React 18, dan TypeScript. Aplikasi ini menggunakan DummyJSON API sebagai backend data produk dan menampilkan fitur-fitur e-commerce modern seperti keranjang belanja, filter produk, infinite scroll, autentikasi, dan tambah produk dengan upload gambar.
+
+> Untuk dokumentasi arsitektur yang lebih mendalam (routing, API routes, state management, known issues), lihat [docs/DOCUMENTATION.md](docs/DOCUMENTATION.md).
 
 ## 📋 Fitur Utama
 
-- **Autentikasi User** - Login/logout dengan session management
-- **Keranjang Belanja** - State management dengan Zustand & persistent storage
+- **Autentikasi User** - Login/logout dengan session management (cookie httpOnly)
+- **Keranjang Belanja** - State management dengan Zustand & persistent storage (localStorage)
+- **Tambah Produk** - Form tambah produk baru dengan upload gambar (disimpan lokal, lihat catatan di DOCUMENTATION.md)
 - **Pencarian & Filter** - Filter berdasarkan kategori, harga, rating, dan lokasi
 - **Infinite Scroll** - Load produk secara dinamis saat scroll
 - **Responsive Design** - UI modern dan mobile-friendly
@@ -19,7 +22,7 @@ Platform e-commerce modern yang dibangun dengan Next.js 15, React 18, dan TypeSc
 
 ### Core
 
-- **Framework**: [Next.js 15.5.6](https://nextjs.org/) (App Router)
+- **Framework**: [Next.js 16.x](https://nextjs.org/) (App Router)
 - **Language**: [TypeScript 5.x](https://www.typescriptlang.org/)
 - **UI Library**: [React 18.3.1](https://react.dev/)
 
@@ -34,6 +37,10 @@ Platform e-commerce modern yang dibangun dengan Next.js 15, React 18, dan TypeSc
 
 - **Global State**: [Zustand 5.x](https://zustand-demo.pmnd.rs/) dengan persist middleware
 
+### Kualitas Kode
+
+- **Lint & Format**: [Biome](https://biomejs.dev/) (`pnpm lint`, `pnpm lint:fix`, `pnpm format`)
+
 ### API
 
 - **Backend**: [DummyJSON API](https://dummyjson.com/)
@@ -42,33 +49,45 @@ Platform e-commerce modern yang dibangun dengan Next.js 15, React 18, dan TypeSc
 
 ```
 mini-ecommerce-nextjs/
-├── app/                          # Next.js App Router
-│   ├── (protected)/             # Protected routes (require auth)
-│   │   ├── cart/               # Halaman keranjang
-│   │   └── products/           # Halaman daftar & detail produk
-│   ├── login/                  # Halaman login
-│   ├── layout.tsx              # Root layout
-│   └── page.tsx                # Homepage
-├── api/                         # API Routes (proxy ke DummyJSON)
-│   ├── cart/                   # Cart endpoints
-│   ├── login/                  # Login endpoint
-│   ├── logout/                 # Logout endpoint
-│   ├── me/                     # User profile endpoint
-│   └── products/               # Products endpoints
-├── components/                  # React Components
-│   ├── auth/                   # Komponen autentikasi
-│   ├── cart/                   # Komponen keranjang
-│   ├── layout/                 # Komponen layout (Navbar, etc)
-│   └── products/               # Komponen produk
-├── hooks/                       # Custom React Hooks
-├── lib/                         # Utilities & helpers
-│   ├── constants.ts            # Konfigurasi & konstanta
-│   ├── helpers.ts              # Helper functions
-│   └── types.ts                # TypeScript types
-├── store/                       # Zustand stores
-│   ├── useCartStore.ts         # Cart state management
-│   └── useUserStore.ts         # User state management
-└── public/                      # Static assets
+├── app/
+│   ├── layout.tsx                       # Root layout (AuthProvider, Navbar, Toaster)
+│   ├── page.tsx                         # "/" → redirect ke /products
+│   ├── login/page.tsx                   # Halaman login
+│   ├── (protected)/                     # Route group dengan auth guard client-side
+│   │   ├── layout.tsx
+│   │   ├── cart/page.tsx                # Halaman keranjang
+│   │   └── products/
+│   │       ├── page.tsx                 # Daftar produk (search, filter, infinite scroll)
+│   │       ├── new/page.tsx             # Form tambah produk + upload gambar
+│   │       └── [slug]/page.tsx          # Detail produk
+│   └── api/                             # API Routes (proxy ke DummyJSON)
+│       ├── login/route.ts
+│       ├── logout/route.ts
+│       ├── me/route.ts
+│       ├── upload/route.ts              # Upload gambar produk/avatar ke public/uploads
+│       ├── cart/add/route.ts
+│       ├── cart/user/route.ts
+│       └── products/
+│           ├── route.ts                 # List & search produk
+│           ├── [slug]/route.ts          # Detail produk
+│           └── categories/route.ts
+├── components/
+│   ├── FileUpload.tsx                   # Komponen upload gambar (dipakai di products/new)
+│   ├── auth/LoginForm.tsx
+│   ├── layout/AuthProvider.tsx
+│   ├── layout/Navbar.tsx
+│   └── products/                        # ProductCard, ProductFilters, ProductSearchBar
+├── hooks/                                # useAuthLoader, useDebounce, useFileUpload
+├── lib/
+│   ├── constants.ts                     # Konfigurasi & konstanta
+│   ├── helpers.ts                       # Helper functions
+│   ├── types.ts                         # TypeScript types (Product, CartItem, dll)
+│   └── upload.ts                        # Layanan upload file ke disk lokal
+├── store/
+│   ├── useCartStore.ts                  # Cart state management
+│   ├── useUserStore.ts                  # User state management
+│   └── useLocalProductsStore.ts         # Produk hasil "Tambah Produk" (localStorage)
+└── public/                              # Static assets & hasil upload (public/uploads)
 ```
 
 ## 🚀 Getting Started

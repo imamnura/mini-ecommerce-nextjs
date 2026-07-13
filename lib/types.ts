@@ -8,6 +8,8 @@ export interface Product {
   title: string;
   description: string;
   price: number;
+  discountPercentage: number;
+  stock: number;
   category: string;
   rating: number;
   brand: string;
@@ -22,7 +24,17 @@ export interface ProductsResponse {
   limit: number;
 }
 
-export interface CartProduct {
+/** The app's own cart item shape (Zustand cart store, persisted to localStorage). */
+export interface CartItem {
+  id: number;
+  title: string;
+  price: number;
+  quantity: number;
+  thumbnail: string;
+}
+
+/** DummyJSON's `/carts/*` response shape — only used by the (currently unused) cart proxy routes. */
+export interface DummyJsonCartProduct {
   id: number;
   title: string;
   price: number;
@@ -30,10 +42,10 @@ export interface CartProduct {
   total: number;
 }
 
-export interface Cart {
+export interface DummyJsonCart {
   id: number;
   userId: number;
-  products: CartProduct[];
+  products: DummyJsonCartProduct[];
   total: number;
   discountedTotal: number;
   totalProducts: number;

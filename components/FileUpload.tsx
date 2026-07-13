@@ -1,7 +1,7 @@
 "use client";
 
-import { useFileUpload } from "@/hooks/useFileUpload";
 import Image from "next/image";
+import { useFileUpload } from "@/hooks/useFileUpload";
 
 interface FileUploadProps {
   type?: "avatar" | "product";
@@ -83,8 +83,8 @@ export function FileUpload({
           {uploading
             ? "Uploading..."
             : displayImage
-            ? "Change Image"
-            : "Select Image"}
+              ? "Change Image"
+              : "Select Image"}
         </button>
       </div>
 

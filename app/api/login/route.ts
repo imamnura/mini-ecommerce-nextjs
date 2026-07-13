@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { API_BASE_URL } from "@/lib/constants";
 
 export async function POST(req: Request) {
   const { username, password } = await req.json();
@@ -6,11 +7,11 @@ export async function POST(req: Request) {
   if (!username || !password) {
     return NextResponse.json(
       { message: "username and password are required" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
-  const res = await fetch("https://dummyjson.com/auth/login", {
+  const res = await fetch(`${API_BASE_URL}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, password, expiresInMins: 60 }),
@@ -19,7 +20,7 @@ export async function POST(req: Request) {
   if (!res.ok) {
     return NextResponse.json(
       { message: "Invalid username or password" },
-      { status: 401 }
+      { status: 401 },
     );
   }
 

@@ -1,29 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { useCartStore } from "@/store/useCartStore";
-import { toast } from "sonner";
-import { ArrowLeft, ShoppingCart, Star, Check, Package } from "lucide-react";
-import Link from "next/link";
+import { ArrowLeft, Check, Package, ShoppingCart, Star } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { TOAST_MESSAGES } from "@/lib/constants";
+import type { Product } from "@/lib/types";
+import { useCartStore } from "@/store/useCartStore";
+import { useLocalProductsStore } from "@/store/useLocalProductsStore";
 
 type DetailProductPageProps = { params: Promise<{ slug: string }> };
-
-interface Product {
-  id: number;
-  title: string;
-  description: string;
-  price: number;
-  discountPercentage: number;
-  rating: number;
-  stock: number;
-  brand: string;
-  category: string;
-  thumbnail: string;
-  images: string[];
-}
 
 export default function DetailProductPage({ params }: DetailProductPageProps) {
   const [product, setProduct] = useState<Product | null>(null);
@@ -33,16 +21,32 @@ export default function DetailProductPage({ params }: DetailProductPageProps) {
   const addToCart = useCartStore((s) => s.addToCart);
   const isInCart = useCartStore((s) => s.isInCart);
   const hasHydrated = useCartStore((s) => s._hasHydrated);
+  const localProducts = useLocalProductsStore((s) => s.products);
 
   useEffect(() => {
     (async () => {
+      setLoading(true);
       const { slug } = await params;
-      const res = await fetch(`https://dummyjson.com/products/${slug}`);
-      const data = await res.json();
+
+      const localProduct = localProducts.find((p) => p.id === Number(slug));
+      if (localProduct) {
+        setProduct(localProduct);
+        setLoading(false);
+        return;
+      }
+
+      const res = await fetch(`/api/products/${slug}`);
+      if (!res.ok) {
+        setProduct(null);
+        setLoading(false);
+        return;
+      }
+
+      const data: Product = await res.json();
       setProduct(data);
       setLoading(false);
     })();
-  }, [params]);
+  }, [params, localProducts]);
 
   const handleAddToCart = () => {
     if (!product) return;
@@ -116,10 +120,11 @@ export default function DetailProductPage({ params }: DetailProductPageProps) {
               <button
                 key={idx}
                 onClick={() => setSelectedImage(idx)}
-                className={`relative aspect-square overflow-hidden rounded-lg transition ${selectedImage === idx
-                  ? "ring-2 ring-green-600"
-                  : "ring-1 ring-gray-200 hover:ring-green-400"
-                  }`}
+                className={`relative aspect-square overflow-hidden rounded-lg transition ${
+                  selectedImage === idx
+                    ? "ring-2 ring-green-600"
+                    : "ring-1 ring-gray-200 hover:ring-green-400"
+                }`}
               >
                 <Image
                   src={img}
@@ -167,10 +172,11 @@ export default function DetailProductPage({ params }: DetailProductPageProps) {
               {Array.from({ length: 5 }).map((_, i) => (
                 <Star
                   key={i}
-                  className={`h-4 w-4 ${i < Math.floor(product.rating)
-                    ? "fill-amber-400 text-amber-400"
-                    : "text-gray-300"
-                    }`}
+                  className={`h-4 w-4 ${
+                    i < Math.floor(product.rating)
+                      ? "fill-amber-400 text-amber-400"
+                      : "text-gray-300"
+                  }`}
                 />
               ))}
               <span className="ml-1 text-sm font-medium text-gray-700">
@@ -179,8 +185,9 @@ export default function DetailProductPage({ params }: DetailProductPageProps) {
             </div>
             <span className="text-sm text-gray-400">•</span>
             <span
-              className={`flex items-center gap-1 text-sm font-medium ${product.stock > 10 ? "text-green-600" : "text-orange-600"
-                }`}
+              className={`flex items-center gap-1 text-sm font-medium ${
+                product.stock > 10 ? "text-green-600" : "text-orange-600"
+              }`}
             >
               <Package className="h-4 w-4" />
               <span>
@@ -204,10 +211,11 @@ export default function DetailProductPage({ params }: DetailProductPageProps) {
             onClick={handleAddToCart}
             disabled={productInCart}
             whileTap={{ scale: 0.97 }}
-            className={`flex w-full items-center justify-center gap-2 rounded-lg px-6 py-4 text-lg font-semibold text-white shadow-lg transition ${productInCart
-              ? "cursor-not-allowed bg-gray-400 shadow-gray-400/30"
-              : "bg-green-600 shadow-green-600/30 hover:bg-green-500 hover:shadow-xl"
-              }`}
+            className={`flex w-full items-center justify-center gap-2 rounded-lg px-6 py-4 text-lg font-semibold text-white shadow-lg transition ${
+              productInCart
+                ? "cursor-not-allowed bg-gray-400 shadow-gray-400/30"
+                : "bg-green-600 shadow-green-600/30 hover:bg-green-500 hover:shadow-xl"
+            }`}
           >
             {productInCart ? (
               <>

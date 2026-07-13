@@ -1,18 +1,19 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
+import { Search } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { Product, ProductsResponse } from "@/lib/types";
 import { ProductCard } from "@/components/products/ProductCard";
 import {
-  ProductFilters,
   type FiltersState,
+  ProductFilters,
 } from "@/components/products/ProductFilters";
 import { ProductSearchBar } from "@/components/products/ProductSearchBar";
-import { motion, AnimatePresence } from "framer-motion";
-import { getMockLocation } from "@/lib/helpers";
 import { useDebounce } from "@/hooks/useDebounce";
-import { Search } from "lucide-react";
 import { PRODUCTS_PER_PAGE } from "@/lib/constants";
+import { getMockLocation } from "@/lib/helpers";
+import type { Product, ProductsResponse } from "@/lib/types";
+import { useLocalProductsStore } from "@/store/useLocalProductsStore";
 
 const PAGE_SIZE = PRODUCTS_PER_PAGE;
 
@@ -52,6 +53,7 @@ export default function ProductsPage() {
   });
 
   const sentinelRef = useRef<HTMLDivElement | null>(null);
+  const localProducts = useLocalProductsStore((s) => s.products);
 
   // Fetch produk (initial & search)
   useEffect(() => {
@@ -109,7 +111,7 @@ export default function ProductsPage() {
           setLoadingMore(true);
           try {
             const res = await fetch(
-              `/api/products?limit=${PAGE_SIZE}&skip=${skipRef.current}`
+              `/api/products?limit=${PAGE_SIZE}&skip=${skipRef.current}`,
             );
             if (!res.ok) throw new Error("Failed to load products");
             const data: ProductsResponse = await res.json();
@@ -127,16 +129,19 @@ export default function ProductsPage() {
         root: null,
         rootMargin: "100px",
         threshold: 0,
-      }
+      },
     );
 
     observer.observe(sentinel);
     return () => observer.disconnect();
   }, [loadingMore, initialLoading, products.length, total, isSearching]); // Removed skip from deps
 
-  // Aplikasikan filter di client
+  // Aplikasikan filter di client. Produk lokal (hasil "Tambah Produk") tidak
+  // dikenal oleh endpoint search DummyJSON, jadi hanya ditampilkan saat tidak searching.
   const filteredProducts = useMemo(() => {
-    return products.filter((p) => {
+    const combined = isSearching ? products : [...localProducts, ...products];
+
+    return combined.filter((p) => {
       // harga
       if (filters.price === "lt100" && p.price >= 100) return false;
       if (filters.price === "100to500" && (p.price < 100 || p.price > 500))
@@ -158,7 +163,7 @@ export default function ProductsPage() {
 
       return true;
     });
-  }, [products, filters]);
+  }, [products, filters, isSearching, localProducts]);
 
   return (
     <main className="space-y-6 pb-12">

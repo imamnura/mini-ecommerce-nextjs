@@ -1,14 +1,14 @@
 "use client";
 
-import type { Product } from "@/lib/types";
-import { getMockLocation } from "@/lib/helpers";
 import { motion } from "framer-motion";
-import { toast } from "sonner";
-import { useCartStore } from "@/store/useCartStore";
-import { Star, MapPin, ShoppingCart, Check } from "lucide-react";
-import Link from "next/link";
+import { Check, MapPin, ShoppingCart, Star } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+import { toast } from "sonner";
 import { TOAST_MESSAGES } from "@/lib/constants";
+import { getMockLocation } from "@/lib/helpers";
+import type { Product } from "@/lib/types";
+import { useCartStore } from "@/store/useCartStore";
 
 interface Props {
   product: Product;
@@ -83,10 +83,11 @@ export function ProductCard({ product }: Props) {
         <button
           onClick={handleAddToCart}
           disabled={productInCart}
-          className={`mt-2 inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold text-white shadow-sm transition ${productInCart
-            ? "cursor-not-allowed bg-gray-400"
-            : "bg-green-600 hover:bg-green-700"
-            }`}
+          className={`mt-2 inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold text-white shadow-sm transition ${
+            productInCart
+              ? "cursor-not-allowed bg-gray-400"
+              : "bg-green-600 hover:bg-green-700"
+          }`}
         >
           {productInCart ? (
             <>

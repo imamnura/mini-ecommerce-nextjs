@@ -3,8 +3,8 @@
  * Handles image uploads for products and user avatars
  */
 
-import { writeFile, mkdir } from "fs/promises";
 import { existsSync } from "fs";
+import { mkdir, writeFile } from "fs/promises";
 import path from "path";
 
 export interface UploadResult {
@@ -37,14 +37,14 @@ const DEFAULT_OPTIONS: UploadOptions = {
  */
 function validateFile(
   file: File,
-  options: UploadOptions = DEFAULT_OPTIONS
+  options: UploadOptions = DEFAULT_OPTIONS,
 ): { valid: boolean; error?: string } {
   // Check file size
   if (options.maxSize && file.size > options.maxSize) {
     return {
       valid: false,
       error: `File size exceeds ${(options.maxSize / 1024 / 1024).toFixed(
-        1
+        1,
       )}MB limit`,
     };
   }
@@ -53,8 +53,9 @@ function validateFile(
   if (options.allowedTypes && !options.allowedTypes.includes(file.type)) {
     return {
       valid: false,
-      error: `File type ${file.type
-        } is not allowed. Allowed types: ${options.allowedTypes.join(", ")}`,
+      error: `File type ${
+        file.type
+      } is not allowed. Allowed types: ${options.allowedTypes.join(", ")}`,
     };
   }
 
@@ -79,7 +80,7 @@ function generateFilename(originalName: string): string {
  */
 export async function uploadFile(
   file: File,
-  options: UploadOptions = DEFAULT_OPTIONS
+  options: UploadOptions = DEFAULT_OPTIONS,
 ): Promise<UploadResult> {
   try {
     // Validate file
@@ -152,7 +153,7 @@ export async function uploadAvatar(file: File): Promise<UploadResult> {
  */
 export async function uploadMultipleFiles(
   files: File[],
-  options: UploadOptions = DEFAULT_OPTIONS
+  options: UploadOptions = DEFAULT_OPTIONS,
 ): Promise<UploadResult[]> {
   const uploadPromises = files.map((file) => uploadFile(file, options));
   return Promise.all(uploadPromises);
@@ -166,7 +167,7 @@ export function validateImageDimensions(
   minWidth?: number,
   minHeight?: number,
   maxWidth?: number,
-  maxHeight?: number
+  maxHeight?: number,
 ): Promise<{
   valid: boolean;
   error?: string;

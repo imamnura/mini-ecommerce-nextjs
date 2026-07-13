@@ -1,12 +1,12 @@
 "use client";
 
+import { LogOut, Plus, ShoppingCart } from "lucide-react";
 import Link from "next/link";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useUserStore } from "@/store/useUserStore";
-import { useCartStore } from "@/store/useCartStore";
-import { ShoppingCart, LogOut } from "lucide-react";
+import { toast } from "sonner";
 import { APP_NAME, TOAST_MESSAGES } from "@/lib/constants";
+import { useCartStore } from "@/store/useCartStore";
+import { useUserStore } from "@/store/useUserStore";
 
 export default function Navbar() {
   const router = useRouter();
@@ -35,6 +35,14 @@ export default function Navbar() {
 
         {user ? (
           <div className="flex items-center gap-3 text-sm sm:gap-5">
+            <Link
+              href="/products/new"
+              className="relative flex items-center gap-1.5 rounded-lg px-3 py-2 font-medium text-gray-700 transition hover:bg-green-50 hover:text-green-600"
+            >
+              <Plus className="h-5 w-5 sm:hidden" />
+              <span className="hidden sm:inline">Tambah Produk</span>
+            </Link>
+
             <Link
               href="/cart"
               className="relative flex items-center gap-1.5 rounded-lg px-3 py-2 font-medium text-gray-700 transition hover:bg-green-50 hover:text-green-600"

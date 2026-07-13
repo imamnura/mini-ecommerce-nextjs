@@ -9,7 +9,6 @@ export const API_BASE_URL =
 
 // Pagination
 export const PRODUCTS_PER_PAGE = 12;
-export const INFINITE_SCROLL_THRESHOLD = 100; // pixels from bottom
 
 // Locations
 export const LOCATIONS = [
@@ -22,18 +21,6 @@ export const LOCATIONS = [
 
 export type Location = (typeof LOCATIONS)[number];
 
-// Price Ranges
-export const PRICE_RANGES = {
-  all: { label: "Semua Harga", min: 0, max: Infinity },
-  lt100: { label: "< $100", min: 0, max: 100 },
-  "100to500": { label: "$100 - $500", min: 100, max: 500 },
-  gt500: { label: "> $500", min: 500, max: Infinity },
-} as const;
-
-// Rating
-export const MIN_RATING = 1;
-export const MAX_RATING = 5;
-
 // Toast Messages
 export const TOAST_MESSAGES = {
   addToCart: "Produk ditambahkan ke keranjang",
@@ -42,4 +29,5 @@ export const TOAST_MESSAGES = {
   logoutSuccess: "Logout berhasil",
   loginError: "Gagal login",
   cartError: "Gagal menambahkan ke keranjang",
+  addProduct: "Produk baru berhasil ditambahkan",
 } as const;

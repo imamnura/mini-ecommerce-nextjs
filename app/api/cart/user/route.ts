@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { API_BASE_URL } from "@/lib/constants";
 
 export async function GET() {
   const cookieStore = await cookies();
@@ -9,7 +10,7 @@ export async function GET() {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
-  const res = await fetch(`https://dummyjson.com/carts/user/${userId}`);
+  const res = await fetch(`${API_BASE_URL}/carts/user/${userId}`);
   const data = await res.json();
 
   return NextResponse.json(data);

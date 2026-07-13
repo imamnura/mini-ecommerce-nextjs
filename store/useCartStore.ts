@@ -1,21 +1,14 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
-interface CartProduct {
-  id: number;
-  title: string;
-  price: number;
-  quantity: number;
-  thumbnail: string;
-}
+import type { CartItem } from "@/lib/types";
 
 interface CartState {
-  products: CartProduct[];
+  products: CartItem[];
   totalQuantity: number;
   totalPrice: number;
   _hasHydrated: boolean;
   setHasHydrated: (state: boolean) => void;
-  addToCart: (product: Omit<CartProduct, "quantity">) => void;
+  addToCart: (product: Omit<CartItem, "quantity">) => void;
   removeFromCart: (productId: number) => void;
   updateQuantity: (productId: number, quantity: number) => void;
   clearCart: () => void;
@@ -41,17 +34,17 @@ export const useCartStore = create<CartState>()(
           // Update quantity if already in cart
           set((state) => {
             const updatedProducts = state.products.map((p) =>
-              p.id === product.id ? { ...p, quantity: p.quantity + 1 } : p
+              p.id === product.id ? { ...p, quantity: p.quantity + 1 } : p,
             );
             return {
               products: updatedProducts,
               totalQuantity: updatedProducts.reduce(
                 (sum, p) => sum + p.quantity,
-                0
+                0,
               ),
               totalPrice: updatedProducts.reduce(
                 (sum, p) => sum + p.price * p.quantity,
-                0
+                0,
               ),
             };
           });
@@ -64,11 +57,11 @@ export const useCartStore = create<CartState>()(
               products: updatedProducts,
               totalQuantity: updatedProducts.reduce(
                 (sum, p) => sum + p.quantity,
-                0
+                0,
               ),
               totalPrice: updatedProducts.reduce(
                 (sum, p) => sum + p.price * p.quantity,
-                0
+                0,
               ),
             };
           });
@@ -78,17 +71,17 @@ export const useCartStore = create<CartState>()(
       removeFromCart: (productId) => {
         set((state) => {
           const updatedProducts = state.products.filter(
-            (p) => p.id !== productId
+            (p) => p.id !== productId,
           );
           return {
             products: updatedProducts,
             totalQuantity: updatedProducts.reduce(
               (sum, p) => sum + p.quantity,
-              0
+              0,
             ),
             totalPrice: updatedProducts.reduce(
               (sum, p) => sum + p.price * p.quantity,
-              0
+              0,
             ),
           };
         });
@@ -102,17 +95,17 @@ export const useCartStore = create<CartState>()(
 
         set((state) => {
           const updatedProducts = state.products.map((p) =>
-            p.id === productId ? { ...p, quantity } : p
+            p.id === productId ? { ...p, quantity } : p,
           );
           return {
             products: updatedProducts,
             totalQuantity: updatedProducts.reduce(
               (sum, p) => sum + p.quantity,
-              0
+              0,
             ),
             totalPrice: updatedProducts.reduce(
               (sum, p) => sum + p.price * p.quantity,
-              0
+              0,
             ),
           };
         });
@@ -129,6 +122,6 @@ export const useCartStore = create<CartState>()(
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);
       },
-    }
-  )
+    },
+  ),
 );
