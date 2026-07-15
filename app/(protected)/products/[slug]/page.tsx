@@ -13,6 +13,8 @@ import { useLocalProductsStore } from "@/store/useLocalProductsStore";
 
 type DetailProductPageProps = { params: Promise<{ slug: string }> };
 
+const STAR_SLOTS = ["star-1", "star-2", "star-3", "star-4", "star-5"];
+
 export default function DetailProductPage({ params }: DetailProductPageProps) {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
@@ -118,7 +120,8 @@ export default function DetailProductPage({ params }: DetailProductPageProps) {
           <div className="grid grid-cols-4 gap-3">
             {product.images.map((img, idx) => (
               <button
-                key={idx}
+                key={img}
+                type="button"
                 onClick={() => setSelectedImage(idx)}
                 className={`relative aspect-square overflow-hidden rounded-lg transition ${
                   selectedImage === idx
@@ -169,9 +172,9 @@ export default function DetailProductPage({ params }: DetailProductPageProps) {
 
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1">
-              {Array.from({ length: 5 }).map((_, i) => (
+              {STAR_SLOTS.map((slot, i) => (
                 <Star
-                  key={i}
+                  key={slot}
                   className={`h-4 w-4 ${
                     i < Math.floor(product.rating)
                       ? "fill-amber-400 text-amber-400"

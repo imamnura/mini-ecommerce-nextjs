@@ -3,9 +3,9 @@
  * Handles image uploads for products and user avatars
  */
 
-import { existsSync } from "fs";
-import { mkdir, writeFile } from "fs/promises";
-import path from "path";
+import { existsSync } from "node:fs";
+import { mkdir, writeFile } from "node:fs/promises";
+import path from "node:path";
 
 export interface UploadResult {
   success: boolean;
@@ -94,7 +94,7 @@ export async function uploadFile(
 
     // Generate filename and paths
     const filename = generateFilename(file.name);
-    const folder = options.folder || DEFAULT_OPTIONS.folder!;
+    const folder = options.folder ?? DEFAULT_OPTIONS.folder ?? "uploads";
     const uploadDir = path.join(process.cwd(), "public", folder);
     const filePath = path.join(uploadDir, filename);
     const publicUrl = `/${folder}/${filename}`;

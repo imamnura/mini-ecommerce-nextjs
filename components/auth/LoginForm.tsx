@@ -72,8 +72,14 @@ export default function LoginForm() {
 
       <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
         <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700">Username</label>
+          <label
+            htmlFor="login-username"
+            className="text-sm font-medium text-gray-700"
+          >
+            Username
+          </label>
           <input
+            id="login-username"
             className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-500/20"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
@@ -82,8 +88,14 @@ export default function LoginForm() {
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700">Password</label>
+          <label
+            htmlFor="login-password"
+            className="text-sm font-medium text-gray-700"
+          >
+            Password
+          </label>
           <input
+            id="login-password"
             type="password"
             className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-500/20"
             value={password}

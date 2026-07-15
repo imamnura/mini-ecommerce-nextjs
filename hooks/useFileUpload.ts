@@ -74,7 +74,8 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
         url: data.url,
       };
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : "Upload failed";
+      const errorMessage =
+        error instanceof Error ? error.message : "Upload failed";
 
       if (onError) {
         onError(errorMessage);
@@ -91,7 +92,7 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
   };
 
   const handleFileInputChange = async (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = e.target.files?.[0];
     if (!file) return;

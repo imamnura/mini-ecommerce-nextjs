@@ -23,7 +23,7 @@ Dokumentasi ini menjelaskan struktur, arsitektur, dan perilaku aktual aplikasi b
 
 ## 1. Ringkasan
 
-Mini e-commerce SPA-like app dengan Next.js App Router. Data produk berasal dari [DummyJSON](https://dummyjson.com/) (backend eksternal, bukan database sendiri). Fitur utama: login, listing produk dengan search/filter/infinite-scroll, detail produk, tambah produk baru dengan upload gambar, dan keranjang belanja yang disimpan di localStorage lewat Zustand — **tidak ada proses checkout sungguhan** (tombol "Checkout Sekarang" belum punya handler).
+Mini e-commerce SPA-like app dengan Next.js App Router. Data produk berasal dari [DummyJSON](https://dummyjson.com/) (backend eksternal, bukan database sendiri). Fitur utama: login, listing produk dengan search/filter/pagination "Muat Lebih Banyak", detail produk, tambah produk baru dengan upload gambar, dan keranjang belanja yang disimpan di localStorage lewat Zustand — **tidak ada proses checkout sungguhan** (tombol "Checkout Sekarang" belum punya handler).
 
 Karena DummyJSON tidak benar-benar mem-persist data (mis. `POST /products/add` selalu berhasil tapi tidak menyimpan apa pun di server mereka), fitur "Tambah Produk" mengikuti pola yang sama dengan cart: mutasi disimpan client-side via Zustand + localStorage (`store/useLocalProductsStore.ts`), bukan lewat DummyJSON. Yang benar-benar nyata dari fitur ini adalah upload gambarnya — file diunggah dan ditulis ke disk lokal (`public/uploads/products/`) lewat `app/api/upload/route.ts`.
 
@@ -110,7 +110,7 @@ mini-ecommerce-nextjs/
 |---|---|---|
 | `/` | `app/page.tsx` | Server component, langsung `redirect("/products")` |
 | `/login` | `app/login/page.tsx` | Membungkus `<LoginForm />` dalam `<Suspense>` (karena pakai `useSearchParams`) |
-| `/products` | `app/(protected)/products/page.tsx` | Listing produk: search (debounce 500ms), filter (harga/rating/kategori/lokasi mock), infinite scroll via `IntersectionObserver` |
+| `/products` | `app/(protected)/products/page.tsx` | Listing produk: search (debounce 500ms), filter (harga/rating/kategori/lokasi mock), pagination via tombol "Muat Lebih Banyak" (klik → fetch halaman berikutnya, di-append ke daftar) |
 | `/products/new` | `app/(protected)/products/new/page.tsx` | Form tambah produk (judul, deskripsi, harga, brand, stok, kategori) + upload gambar via `<FileUpload>`. Simpan ke `useLocalProductsStore`, lalu redirect ke `/products/{id}` |
 | `/products/[slug]` | `app/(protected)/products/[slug]/page.tsx` | Detail produk. Cek dulu ke `useLocalProductsStore` (produk hasil tambah lokal); jika tidak ketemu, fetch ke `/api/products/{slug}` (proxy internal, bukan lagi langsung ke DummyJSON) |
 | `/cart` | `app/(protected)/cart/page.tsx` | Daftar item keranjang + ringkasan order, sumber data 100% dari Zustand store (bukan dari `/api/cart/*`) |

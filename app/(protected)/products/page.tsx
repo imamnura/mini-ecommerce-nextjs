@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Search } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { toast } from "sonner";
 import { ProductCard } from "@/components/products/ProductCard";
 import {
   type FiltersState,
@@ -16,6 +17,10 @@ import type { Product, ProductsResponse } from "@/lib/types";
 import { useLocalProductsStore } from "@/store/useLocalProductsStore";
 
 const PAGE_SIZE = PRODUCTS_PER_PAGE;
+const SKELETON_SLOTS = Array.from(
+  { length: 12 },
+  (_, i) => `skeleton-${i}`,
+);
 
 // Loader component
 function ProductSkeleton() {
@@ -33,9 +38,7 @@ function ProductSkeleton() {
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
-  // const [skip, setSkip] = useState(0); // Removed unused state
-
-  const skipRef = useRef(0); // Track skip with ref to avoid observer recreation
+  const skipRef = useRef(0);
   const [total, setTotal] = useState(0);
   const [loadingMore, setLoadingMore] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
@@ -52,7 +55,6 @@ export default function ProductsPage() {
     location: "all",
   });
 
-  const sentinelRef = useRef<HTMLDivElement | null>(null);
   const localProducts = useLocalProductsStore((s) => s.products);
 
   // Fetch produk (initial & search)
@@ -78,8 +80,7 @@ export default function ProductsPage() {
         const data: ProductsResponse = await res.json();
         setProducts(data.products);
         setTotal(data.total);
-        // setSkip(PAGE_SIZE); // Removed unused state update
-        skipRef.current = PAGE_SIZE; // Sync ref with state
+        skipRef.current = PAGE_SIZE;
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err.message || "Terjadi kesalahan");
@@ -93,48 +94,24 @@ export default function ProductsPage() {
     })();
   }, [debouncedSearch]);
 
-  // Infinite scroll observer
-  useEffect(() => {
-    const sentinel = sentinelRef.current;
-    if (!sentinel) return;
+  async function handleLoadMore() {
+    if (loadingMore || isSearching || products.length >= total) return;
 
-    const observer = new IntersectionObserver(
-      async (entries) => {
-        const [entry] = entries;
-        if (
-          entry.isIntersecting &&
-          !loadingMore &&
-          !initialLoading &&
-          !isSearching &&
-          products.length < total
-        ) {
-          setLoadingMore(true);
-          try {
-            const res = await fetch(
-              `/api/products?limit=${PAGE_SIZE}&skip=${skipRef.current}`,
-            );
-            if (!res.ok) throw new Error("Failed to load products");
-            const data: ProductsResponse = await res.json();
-            setProducts((prev) => [...prev, ...data.products]);
-            skipRef.current += PAGE_SIZE; // Update ref immediately
-            // setSkip(skipRef.current); // Removed unused state
-          } catch {
-            // Silent fail for infinite scroll - user can retry by scrolling
-          } finally {
-            setLoadingMore(false);
-          }
-        }
-      },
-      {
-        root: null,
-        rootMargin: "100px",
-        threshold: 0,
-      },
-    );
-
-    observer.observe(sentinel);
-    return () => observer.disconnect();
-  }, [loadingMore, initialLoading, products.length, total, isSearching]); // Removed skip from deps
+    setLoadingMore(true);
+    try {
+      const res = await fetch(
+        `/api/products?limit=${PAGE_SIZE}&skip=${skipRef.current}`,
+      );
+      if (!res.ok) throw new Error("Failed to load products");
+      const data: ProductsResponse = await res.json();
+      setProducts((prev) => [...prev, ...data.products]);
+      skipRef.current += PAGE_SIZE;
+    } catch {
+      toast.error("Gagal memuat produk, coba lagi");
+    } finally {
+      setLoadingMore(false);
+    }
+  }
 
   // Aplikasikan filter di client. Produk lokal (hasil "Tambah Produk") tidak
   // dikenal oleh endpoint search DummyJSON, jadi hanya ditampilkan saat tidak searching.
@@ -203,42 +180,46 @@ export default function ProductsPage() {
 
         {initialLoading ? (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {Array.from({ length: 12 }).map((_, idx) => (
-              <ProductSkeleton key={idx} />
+            {SKELETON_SLOTS.map((slot) => (
+              <ProductSkeleton key={slot} />
             ))}
           </div>
         ) : (
           <>
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={filteredProducts.length}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4"
-              >
-                {filteredProducts.map((p, index) => (
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+              <AnimatePresence>
+                {filteredProducts.map((p) => (
                   <motion.div
                     key={p.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05, duration: 0.3 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
                   >
                     <ProductCard product={p} />
                   </motion.div>
                 ))}
-              </motion.div>
-            </AnimatePresence>
+              </AnimatePresence>
+            </div>
 
-            {/* Sentinel untuk infinite scroll */}
+            {/* Load more */}
             {!isSearching && products.length > 0 && products.length < total && (
-              <div ref={sentinelRef} className="flex justify-center py-8">
-                {loadingMore && (
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
+              <div className="flex justify-center py-8">
+                <button
+                  type="button"
+                  onClick={handleLoadMore}
+                  disabled={loadingMore}
+                  className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-6 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition hover:border-green-600 hover:text-green-600 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {loadingMore && (
                     <div className="h-4 w-4 animate-spin rounded-full border-2 border-green-600 border-t-transparent" />
-                    <span>Memuat produk lagi...</span>
-                  </div>
-                )}
+                  )}
+                  <span>
+                    {loadingMore
+                      ? "Memuat produk lagi..."
+                      : "Muat Lebih Banyak"}
+                  </span>
+                </button>
               </div>
             )}
 

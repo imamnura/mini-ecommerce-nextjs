@@ -1,6 +1,6 @@
 # Mini Ecommerce - Next.js
 
-Platform e-commerce modern yang dibangun dengan Next.js 16, React 18, dan TypeScript. Aplikasi ini menggunakan DummyJSON API sebagai backend data produk dan menampilkan fitur-fitur e-commerce modern seperti keranjang belanja, filter produk, infinite scroll, autentikasi, dan tambah produk dengan upload gambar.
+Platform e-commerce modern yang dibangun dengan Next.js 16, React 18, dan TypeScript. Aplikasi ini menggunakan DummyJSON API sebagai backend data produk dan menampilkan fitur-fitur e-commerce modern seperti keranjang belanja, filter produk, pagination "Muat Lebih Banyak", autentikasi, dan tambah produk dengan upload gambar.
 
 > Untuk dokumentasi arsitektur yang lebih mendalam (routing, API routes, state management, known issues), lihat [docs/DOCUMENTATION.md](docs/DOCUMENTATION.md).
 
@@ -10,7 +10,7 @@ Platform e-commerce modern yang dibangun dengan Next.js 16, React 18, dan TypeSc
 - **Keranjang Belanja** - State management dengan Zustand & persistent storage (localStorage)
 - **Tambah Produk** - Form tambah produk baru dengan upload gambar (disimpan lokal, lihat catatan di DOCUMENTATION.md)
 - **Pencarian & Filter** - Filter berdasarkan kategori, harga, rating, dan lokasi
-- **Infinite Scroll** - Load produk secara dinamis saat scroll
+- **Muat Lebih Banyak** - Load produk halaman berikutnya lewat tombol, bukan scroll otomatis
 - **Responsive Design** - UI modern dan mobile-friendly
 - **Animasi Smooth** - Transisi halus dengan Framer Motion
 - **Toast Notifications** - Feedback interaktif dengan Sonner

@@ -34,10 +34,16 @@ export function FileUpload({
   });
 
   const displayImage = preview || currentImage;
+  const inputId = `file-upload-${type}`;
 
   return (
     <div className="space-y-4">
-      <label className="block text-sm font-medium text-gray-700">{label}</label>
+      <label
+        htmlFor={inputId}
+        className="block text-sm font-medium text-gray-700"
+      >
+        {label}
+      </label>
 
       {/* Preview */}
       {displayImage && (
@@ -67,6 +73,7 @@ export function FileUpload({
       {/* Upload Button */}
       <div>
         <input
+          id={inputId}
           ref={fileInputRef}
           type="file"
           accept={acceptedTypes}

@@ -105,6 +105,7 @@ export default function CartPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <button
+                      type="button"
                       onClick={() => updateQuantity(p.id, p.quantity - 1)}
                       className="flex h-8 w-8 items-center justify-center rounded-md border border-gray-300 text-gray-600 transition hover:bg-gray-100"
                     >
@@ -114,6 +115,7 @@ export default function CartPage() {
                       {p.quantity}
                     </span>
                     <button
+                      type="button"
                       onClick={() => updateQuantity(p.id, p.quantity + 1)}
                       className="flex h-8 w-8 items-center justify-center rounded-md border border-gray-300 text-gray-600 transition hover:bg-gray-100"
                     >
@@ -124,6 +126,7 @@ export default function CartPage() {
                     ${(p.price * p.quantity).toFixed(2)}
                   </div>
                   <button
+                    type="button"
                     onClick={() => removeFromCart(p.id)}
                     className="rounded-md p-2 text-red-500 transition hover:bg-red-50"
                     title="Hapus dari keranjang"
@@ -158,7 +161,10 @@ export default function CartPage() {
               </div>
             </div>
 
-            <button className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-green-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-green-600/30 transition hover:bg-green-500 hover:shadow-xl">
+            <button
+              type="button"
+              className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-green-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-green-600/30 transition hover:bg-green-500 hover:shadow-xl"
+            >
               <Rocket className="h-4 w-4" />
               <span>Checkout Sekarang</span>
             </button>

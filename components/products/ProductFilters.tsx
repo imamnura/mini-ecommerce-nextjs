@@ -81,8 +81,14 @@ export function ProductFilters({ products, value, onChange }: Props) {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {/* Rating */}
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-gray-700">Rating</label>
+            <label
+              htmlFor="filter-rating"
+              className="text-xs font-medium text-gray-700"
+            >
+              Rating
+            </label>
             <select
+              id="filter-rating"
               className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-500/20"
               value={value.rating}
               onChange={(e) =>
@@ -104,10 +110,14 @@ export function ProductFilters({ products, value, onChange }: Props) {
 
           {/* Kategori */}
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-gray-700">
+            <label
+              htmlFor="filter-category"
+              className="text-xs font-medium text-gray-700"
+            >
               Kategori
             </label>
             <select
+              id="filter-category"
               className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-500/20"
               value={value.category}
               onChange={(e) =>
@@ -128,8 +138,14 @@ export function ProductFilters({ products, value, onChange }: Props) {
 
           {/* Lokasi */}
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-gray-700">Lokasi</label>
+            <label
+              htmlFor="filter-location"
+              className="text-xs font-medium text-gray-700"
+            >
+              Lokasi
+            </label>
             <select
+              id="filter-location"
               className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-500/20"
               value={value.location}
               onChange={(e) =>
@@ -150,8 +166,14 @@ export function ProductFilters({ products, value, onChange }: Props) {
 
           {/* Harga */}
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-gray-700">Harga</label>
+            <label
+              htmlFor="filter-price"
+              className="text-xs font-medium text-gray-700"
+            >
+              Harga
+            </label>
             <select
+              id="filter-price"
               className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-500/20"
               value={value.price}
               onChange={(e) =>

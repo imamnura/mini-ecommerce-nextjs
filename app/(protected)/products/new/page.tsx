@@ -104,10 +104,14 @@ export default function NewProductPage() {
         />
 
         <div className="space-y-1.5">
-          <label className="text-sm font-medium text-gray-700">
+          <label
+            htmlFor="new-product-title"
+            className="text-sm font-medium text-gray-700"
+          >
             Nama Produk
           </label>
           <input
+            id="new-product-title"
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -116,8 +120,14 @@ export default function NewProductPage() {
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-sm font-medium text-gray-700">Deskripsi</label>
+          <label
+            htmlFor="new-product-description"
+            className="text-sm font-medium text-gray-700"
+          >
+            Deskripsi
+          </label>
           <textarea
+            id="new-product-description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={4}
@@ -127,10 +137,14 @@ export default function NewProductPage() {
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1.5">
-            <label className="text-sm font-medium text-gray-700">
+            <label
+              htmlFor="new-product-price"
+              className="text-sm font-medium text-gray-700"
+            >
               Harga ($)
             </label>
             <input
+              id="new-product-price"
               type="number"
               min="0"
               step="0.01"
@@ -141,8 +155,14 @@ export default function NewProductPage() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-sm font-medium text-gray-700">Stok</label>
+            <label
+              htmlFor="new-product-stock"
+              className="text-sm font-medium text-gray-700"
+            >
+              Stok
+            </label>
             <input
+              id="new-product-stock"
               type="number"
               min="0"
               value={stock}
@@ -154,8 +174,14 @@ export default function NewProductPage() {
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1.5">
-            <label className="text-sm font-medium text-gray-700">Brand</label>
+            <label
+              htmlFor="new-product-brand"
+              className="text-sm font-medium text-gray-700"
+            >
+              Brand
+            </label>
             <input
+              id="new-product-brand"
               type="text"
               value={brand}
               onChange={(e) => setBrand(e.target.value)}
@@ -164,11 +190,15 @@ export default function NewProductPage() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-sm font-medium text-gray-700">
+            <label
+              htmlFor="new-product-category"
+              className="text-sm font-medium text-gray-700"
+            >
               Kategori
             </label>
             {categories.length > 0 ? (
               <select
+                id="new-product-category"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-500/20"
@@ -181,6 +211,7 @@ export default function NewProductPage() {
               </select>
             ) : (
               <input
+                id="new-product-category"
                 type="text"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
