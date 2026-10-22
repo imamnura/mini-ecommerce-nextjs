@@ -11,22 +11,22 @@
     "format": "biome format --write ."
   },
   "dependencies": {
-    "framer-motion": "^12.42.2",
-    "lucide-react": "^0.555.0",
-    "next": "^16.2.10",
-    "postcss": "^8.5.16",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "sonner": "^2.0.7",
-    "zustand": "^5.0.14"
+    "framer-motion": "^14.5.0",
+    "lucide-react": "^1.61.0",
+    "next": "^16.4.2",
+    "postcss": "^8.5.31",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "sonner": "^2.0.8",
+    "zustand": "^5.0.15"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.3",
-    "@tailwindcss/postcss": "^4.3.2",
-    "@types/node": "^20.19.43",
-    "@types/react": "^18.3.31",
-    "@types/react-dom": "^18.3.7",
-    "tailwindcss": "^4.3.2",
-    "typescript": "^5.9.3"
+    "@biomejs/biome": "^2.6.2",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^24.19.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^7.0.2"
   }
 }

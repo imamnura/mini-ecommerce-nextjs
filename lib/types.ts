@@ -32,22 +32,3 @@ export interface CartItem {
   quantity: number;
   thumbnail: string;
 }
-
-/** DummyJSON's `/carts/*` response shape — only used by the (currently unused) cart proxy routes. */
-export interface DummyJsonCartProduct {
-  id: number;
-  title: string;
-  price: number;
-  quantity: number;
-  total: number;
-}
-
-export interface DummyJsonCart {
-  id: number;
-  userId: number;
-  products: DummyJsonCartProduct[];
-  total: number;
-  discountedTotal: number;
-  totalProducts: number;
-  totalQuantity: number;
-}

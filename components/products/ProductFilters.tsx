@@ -1,17 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { LOCATIONS, type Location } from "@/lib/constants";
 import type { Product } from "@/lib/types";
 
 export type PriceFilter = "all" | "lt100" | "100to500" | "gt500";
 export type RatingFilter = "all" | 1 | 2 | 3 | 4 | 5;
-export type LocationFilter =
-  | "all"
-  | "Jakarta"
-  | "Bandung"
-  | "Surabaya"
-  | "Yogyakarta"
-  | "Medan";
+export type LocationFilter = "all" | Location;
 
 export interface FiltersState {
   price: PriceFilter;
@@ -156,11 +151,11 @@ export function ProductFilters({ products, value, onChange }: Props) {
               }
             >
               <option value="all">Semua Lokasi</option>
-              <option value="Jakarta">Jakarta</option>
-              <option value="Bandung">Bandung</option>
-              <option value="Surabaya">Surabaya</option>
-              <option value="Yogyakarta">Yogyakarta</option>
-              <option value="Medan">Medan</option>
+              {LOCATIONS.map((loc) => (
+                <option key={loc} value={loc}>
+                  {loc}
+                </option>
+              ))}
             </select>
           </div>
 

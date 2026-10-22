@@ -109,8 +109,6 @@ export async function uploadFile(
     const buffer = Buffer.from(bytes);
     await writeFile(filePath, buffer);
 
-    console.log("✅ File uploaded:", publicUrl);
-
     return {
       success: true,
       url: publicUrl,
@@ -145,89 +143,5 @@ export async function uploadAvatar(file: File): Promise<UploadResult> {
     ...DEFAULT_OPTIONS,
     folder: "uploads/avatars",
     maxSize: 2 * 1024 * 1024, // 2MB for avatars
-  });
-}
-
-/**
- * Upload multiple files
- */
-export async function uploadMultipleFiles(
-  files: File[],
-  options: UploadOptions = DEFAULT_OPTIONS,
-): Promise<UploadResult[]> {
-  const uploadPromises = files.map((file) => uploadFile(file, options));
-  return Promise.all(uploadPromises);
-}
-
-/**
- * Validate image dimensions (client-side helper)
- */
-export function validateImageDimensions(
-  file: File,
-  minWidth?: number,
-  minHeight?: number,
-  maxWidth?: number,
-  maxHeight?: number,
-): Promise<{
-  valid: boolean;
-  error?: string;
-  dimensions?: { width: number; height: number };
-}> {
-  return new Promise((resolve) => {
-    const img = new Image();
-    const objectUrl = URL.createObjectURL(file);
-
-    img.onload = () => {
-      URL.revokeObjectURL(objectUrl);
-
-      const { width, height } = img;
-
-      if (minWidth && width < minWidth) {
-        resolve({
-          valid: false,
-          error: `Image width must be at least ${minWidth}px (current: ${width}px)`,
-        });
-        return;
-      }
-
-      if (minHeight && height < minHeight) {
-        resolve({
-          valid: false,
-          error: `Image height must be at least ${minHeight}px (current: ${height}px)`,
-        });
-        return;
-      }
-
-      if (maxWidth && width > maxWidth) {
-        resolve({
-          valid: false,
-          error: `Image width must not exceed ${maxWidth}px (current: ${width}px)`,
-        });
-        return;
-      }
-
-      if (maxHeight && height > maxHeight) {
-        resolve({
-          valid: false,
-          error: `Image height must not exceed ${maxHeight}px (current: ${height}px)`,
-        });
-        return;
-      }
-
-      resolve({
-        valid: true,
-        dimensions: { width, height },
-      });
-    };
-
-    img.onerror = () => {
-      URL.revokeObjectURL(objectUrl);
-      resolve({
-        valid: false,
-        error: "Failed to load image",
-      });
-    };
-
-    img.src = objectUrl;
   });
 }

@@ -24,10 +24,6 @@ export type Location = (typeof LOCATIONS)[number];
 // Toast Messages
 export const TOAST_MESSAGES = {
   addToCart: "Produk ditambahkan ke keranjang",
-  removeFromCart: "Produk dihapus dari keranjang",
-  loginSuccess: "Login berhasil",
   logoutSuccess: "Logout berhasil",
-  loginError: "Gagal login",
-  cartError: "Gagal menambahkan ke keranjang",
   addProduct: "Produk baru berhasil ditambahkan",
 } as const;

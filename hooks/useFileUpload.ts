@@ -1,12 +1,7 @@
 "use client";
 
-import { useState, useRef } from "react";
-
-interface UploadResult {
-  success: boolean;
-  url?: string;
-  error?: string;
-}
+import { useRef, useState } from "react";
+import type { UploadResult } from "@/lib/upload";
 
 interface UseFileUploadOptions {
   type?: "avatar" | "product";
